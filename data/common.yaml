@@ -1,0 +1,26 @@
+---
+lookup_options:
+    r10k::config::conf:
+        merge: hash
+
+r10k::config::conf:
+    cachedir: /var/cache/r10k
+    deploy:
+        purge_levels:
+            - deployment
+            - puppetfile
+
+r10k::cron::defaults:
+    ensure: present
+    minute: 30
+    hour: absent
+    month: absent
+    monthday: absent
+    weekday: absent
+r10k::cron::verbosity: notice
+
+r10k::group: root
+
+r10k::install::version: installed
+
+r10k::user: root
