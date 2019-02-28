@@ -15,7 +15,7 @@ class r10k::config (
     $file_defaults = { 'ensure' => 'directory',
                       'owner'  => $user,
                       'group'  => $group,
-                      'mode'  => '0750',
+                      'mode'  => '2770',
                     }
     ensure_resource( 'file', $r10k_conf_dir, $file_defaults )
 

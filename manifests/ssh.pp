@@ -21,7 +21,7 @@ class r10k::ssh (
         'ensure' => 'directory',
         'owner'  => $r10k_user,
         'group'  => $r10k_group,
-        'mode'   => '0750',
+        'mode'   => '2770',
     }
 
 
@@ -42,12 +42,12 @@ class r10k::ssh (
     file {
         $private_key:
             ensure  => 'file',
-            mode    => '0400',
+            mode    => '0440',
             content => $private_key_contents,
         ;
         $public_key:
             ensure  => 'file',
-            mode    => '0400',
+            mode    => '0440',
             content => $public_key_contents,
         ;
         default:
