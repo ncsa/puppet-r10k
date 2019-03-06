@@ -42,12 +42,12 @@ class r10k::ssh (
     file {
         $private_key:
             ensure  => 'file',
-            mode    => '0400',
+            mode    => '0440',
             content => $private_key_contents,
         ;
         $public_key:
             ensure  => 'file',
-            mode    => '0400',
+            mode    => '0440',
             content => $public_key_contents,
         ;
         default:
@@ -69,9 +69,13 @@ class r10k::ssh (
         'root'  => '/root',
         default => "/home/${r10k_user}"
     }
+    #ensure parent dir
     $user_ssh_dir = "${user_home}/.ssh"
+    ensure_resource( 'file',
+                     $user_ssh_dir,
+                     $file_defaults + { 'mode' => '0700' } )
+    #adjust user ssh config
     $user_ssh_conf = "${user_ssh_dir}/config"
-    ensure_resource( 'file', $user_ssh_dir, $file_defaults )
     $data = { 'User'                     => 'git',
               'PreferredAuthentications' => 'publickey',
               'IdentityFile'             => $private_key,
@@ -80,6 +84,7 @@ class r10k::ssh (
     $data.each | $key, $val | {
         ssh_config{ "${r10k_user} ssh_config ${gitserver} ${key}":
             ensure => present,
+            target => $user_ssh_conf,
             host   => $gitserver,
             key    => $key,
             value  => $val,

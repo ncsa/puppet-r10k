@@ -6,9 +6,15 @@ class r10k::install (
     String $version,
 ) {
 
-    package { 'ruby' :
+    package { 'r10k' :
         ensure   => $version,
-        provider => 'gem',
+        provider => 'puppet_gem',
+    }
+
+    # Create symlink
+    file { '/opt/puppetlabs/bin/r10k' :
+        ensure => 'link',
+        target => '/opt/puppetlabs/puppet/bin/r10k',
     }
 
 }

@@ -9,6 +9,8 @@ r10k::config::conf:
         purge_levels:
             - deployment
             - puppetfile
+r10k::config::puppet_codedir: /etc/puppetlabs/code
+
 
 r10k::cron::defaults:
     ensure: present

@@ -4,6 +4,7 @@
 #
 class r10k::config (
     Hash $conf,
+    String $puppet_codedir,
 ) {
 
     # Get values from r10k top level
@@ -30,4 +31,12 @@ class r10k::config (
             * => $file_defaults,
         ;
     }
+
+    # Set ownership & perms on various dirs
+    $dirlist = [ $puppet_codedir,
+                 $conf['cachedir'],
+               ]
+    ensure_resource( 'file',
+                     $dirlist,
+                     $file_defaults + {'mode' => '2770'} )
 }

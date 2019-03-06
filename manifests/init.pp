@@ -12,7 +12,7 @@ class r10k (
 
     include ::r10k::install
     include ::r10k::config
-#    include ::r10k::cron
+    include ::r10k::user
     include ::r10k::ssh
 
 }
