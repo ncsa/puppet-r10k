@@ -11,10 +11,13 @@ class r10k::install (
         provider => 'puppet_gem',
     }
 
+    $r10k_executable = lookup( 'r10k::executable' )
+    $r10k_symlink = lookup( 'r10k::symlink' )
+
     # Create symlink
-    file { '/opt/puppetlabs/bin/r10k' :
+    file { $r10k_symlink:
         ensure => 'link',
-        target => '/opt/puppetlabs/puppet/bin/r10k',
+        target => $r10k_executable,
     }
 
 }

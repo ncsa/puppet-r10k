@@ -42,12 +42,12 @@ class r10k::ssh (
     file {
         $private_key:
             ensure  => 'file',
-            mode    => '0440',
+            mode    => '0400',
             content => $private_key_contents,
         ;
         $public_key:
             ensure  => 'file',
-            mode    => '0440',
+            mode    => '0400',
             content => $public_key_contents,
         ;
         default:

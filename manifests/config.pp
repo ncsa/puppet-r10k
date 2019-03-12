@@ -8,16 +8,18 @@ class r10k::config (
 ) {
 
     # Get values from r10k top level
-    $user      = lookup( 'r10k::user' )
-    $group     = lookup( 'r10k::group' )
+    $user            = lookup( 'r10k::user' )
+    $group           = lookup( 'r10k::group' )
+    $r10k_executable = lookup( 'r10k::executable' )
+
 
     # Create r10k config directory
     $r10k_conf_dir = '/etc/puppetlabs/r10k'
     $file_defaults = { 'ensure' => 'directory',
-                      'owner'  => $user,
-                      'group'  => $group,
-                      'mode'  => '0750',
-                    }
+                       'owner'  => $user,
+                       'group'  => $group,
+                       'mode'   => '0750',
+                     }
     ensure_resource( 'file', $r10k_conf_dir, $file_defaults )
 
     # Populate config file
@@ -33,10 +35,26 @@ class r10k::config (
     }
 
     # Set ownership & perms on various dirs
-    $dirlist = [ $puppet_codedir,
-                 $conf['cachedir'],
-               ]
     ensure_resource( 'file',
-                     $dirlist,
+                     $conf['cachedir'],
                      $file_defaults + {'mode' => '2770'} )
+    ensure_resource( 'file',
+                     $puppet_codedir,
+                     $file_defaults + {'mode' => '2775'} )
+
+### ENABLE ONLY AFTER FIXING R10K POSTRUN SCRIPTS TO BE ABLE TO GET 
+### USEFUL INFORMATION FROM "puppet config" COMMANDS WHEN RUN AS
+### NON-ROOT OR NON-PUPPET
+#
+#    # Set ownership and setuid on r10k executable
+#    file {
+#        $r10k_executable :
+#            ensure  => present,
+#            mode    => '4550',
+#            require => Package[ 'r10k' ],
+#        ;
+#        default:
+#            * => $file_defaults,
+#        ;
+#    }
 }
