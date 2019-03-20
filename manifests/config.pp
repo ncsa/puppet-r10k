@@ -20,7 +20,7 @@ class r10k::config (
                        'group'  => $group,
                        'mode'   => '0750',
                      }
-    ensure_resource( 'file', $r10k_conf_dir, $file_defaults )
+    ensure_resources( 'file', { $r10k_conf_dir => $file_defaults }, $file_defaults )
 
     # Populate config file
     file {
@@ -35,12 +35,10 @@ class r10k::config (
     }
 
     # Set ownership & perms on various dirs
-    ensure_resource( 'file',
-                     $conf['cachedir'],
-                     $file_defaults + {'mode' => '2770'} )
-    ensure_resource( 'file',
-                     $puppet_codedir,
-                     $file_defaults + {'mode' => '2775'} )
+    $dirs = { $conf['cachedir'] => {'mode' => '2775'},
+              $puppet_codedir   => {'mode' => '2775'},
+            }
+    ensure_resources( 'file', $dirs, $file_defaults )
 
 ### ENABLE ONLY AFTER FIXING R10K POSTRUN SCRIPTS TO BE ABLE TO GET 
 ### USEFUL INFORMATION FROM "puppet config" COMMANDS WHEN RUN AS
