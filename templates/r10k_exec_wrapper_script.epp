@@ -9,6 +9,8 @@ R10K=<%= $r10k_executable %>
 # pidfile (doubles as the lockfile)
 PIDFILE=<%= $r10k_pidfile %>
 
+LOGDIR="${HOME}/r10k-logs"
+LOGFILE="${LOGDIR}"/$(date +%s)
 
 die() {
     echo "ERROR - $*"
@@ -16,7 +18,7 @@ die() {
 }
 
 
-getLock() {
+get_Lock() {
     exec 200>$PIDFILE
     flock --nonblock --exclusive 200 || die "unable to acquire lock - process already running?"
     pid=$$
@@ -24,14 +26,38 @@ getLock() {
 }
 
 
-releaseLock() {
+release_Lock() {
     flock --unlock 200 || exit 1
 }
 
 
-set -x
-getLock
+check_Errors() {
+    tmpfn=$( mktemp )
+    grep -i err "$LOGFILE" \
+    | grep -v 'error_document\|pe_license\|title patterns that use procs are not supported' \
+    >"$tmpfn"
+    if [[ -s "$tmpfn" ]] ; then
+        cat "$tmpfn"
+        echo
+        echo "For more details, see: '$LOGFILE'"
+        echo
+    fi
+    rm -rf "$tmpfn"
+}
 
-$R10K deploy environment -p -v debug2 &>~/r10k.out.$(date +%s)
 
-releaseLock
+clean_Old_Logs() {
+    find "$LOGDIR" -mtime +30 -delete
+}
+
+mkdir -p "$LOGDIR"
+
+get_Lock
+
+$R10K deploy environment -p -v debug2 &>"$LOGFILE"
+
+release_Lock
+
+check_Errors
+
+clean_Old_Logs
