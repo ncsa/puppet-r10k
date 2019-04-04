@@ -50,6 +50,14 @@ clean_Old_Logs() {
     find "$LOGDIR" -mtime +30 -delete
 }
 
+
+# If any cmdline paramters, run regular r10k and exit
+if [[ $# -gt 0 ]] ; then
+    $R10K "$@"
+    exit $?
+fi
+
+# Otherwise, run deploy environment
 mkdir -p "$LOGDIR"
 
 get_Lock
