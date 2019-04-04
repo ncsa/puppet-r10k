@@ -1,0 +1,37 @@
+<%- | 
+    String $r10k_executable,
+    String $r10k_pidfile
+    | -%>
+#!/bin/bash
+
+# full path to r10k executable
+R10K=<%= $r10k_executable %>
+# pidfile (doubles as the lockfile)
+PIDFILE=<%= $r10k_pidfile %>
+
+
+die() {
+    echo "ERROR - $*"
+    exit 99
+}
+
+
+getLock() {
+    exec 200>$PIDFILE
+    flock --nonblock --exclusive 200 || die "unable to acquire lock - process already running?"
+    pid=$$
+    echo $pid 1>&200
+}
+
+
+releaseLock() {
+    flock --unlock 200 || exit 1
+}
+
+
+set -x
+getLock
+
+$R10K deploy environment -p -v debug2 &>~/r10k.out.$(date +%s)
+
+releaseLock

@@ -45,6 +45,8 @@ class r10k::config (
 ### NON-ROOT OR NON-PUPPET
 #
 #    # Set ownership and setuid on r10k executable
+#    #
+#    # Also need to set (same) on r10k::install::exec_wrapper_fn
 #    file {
 #        $r10k_executable :
 #            ensure  => present,

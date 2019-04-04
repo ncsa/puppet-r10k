@@ -3,4 +3,6 @@ r10k::required_pkgs:
     - rubygems
 
 r10k::executable: /opt/puppetlabs/puppet/bin/r10k
-r10k::symlink: /opt/puppetlabs/bin/r10k
+r10k::pidfile: /var/run/r10k
+
+r10k::install::exec_wrapper_fn: /opt/puppetlabs/bin/r10k

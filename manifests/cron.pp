@@ -4,11 +4,11 @@
 #
 class r10k::cron (
     Hash   $defaults,
-    String $verbosity,
 ) {
 
     # Get values from r10k top level
-    $user      = lookup( 'r10k::user' )
+    $user         = lookup( 'r10k::user' )
+    $exec_wrapper_fn = lookup( 'r10k::install::exec_wrapper_fn' )
 
 
     # Cron Defaults
@@ -32,9 +32,7 @@ class r10k::cron (
 
 
     # Create cron job
-    $r10k_path = '/opt/puppetlabs/puppet/bin/r10k'
-    $r10k_cmd = "${r10k_path} deploy environment -p -v ${verbosity}"
-    $command = "${r10k_cmd} 1>${cronlogs}/\$(\$DATE)_r10k_deploy.log 2>&1"
+    $command = "${exec_wrapper_fn} 1>${cronlogs}/\$(\$DATE)_r10k_deploy.log 2>&1"
     cron {
         'r10k deploy environment' :
             command => $command,

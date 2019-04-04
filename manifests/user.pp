@@ -26,4 +26,5 @@ class r10k::user {
     group { $r10k_group :
         ensure     => present,
     }
+
 }
