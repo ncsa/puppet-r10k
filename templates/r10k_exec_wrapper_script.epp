@@ -34,7 +34,7 @@ release_Lock() {
 check_Errors() {
     tmpfn=$( mktemp )
     grep -i error "$LOGFILE" \
-    | grep -v '_error\|error_\|pe_license\|title patterns that use procs are not supported' \
+    | grep -v '_error\|error_\|pe_license\|title patterns that use procs are not supported\|HEAD is now at' \
     >"$tmpfn"
     if [[ -s "$tmpfn" ]] ; then
         cat "$tmpfn"
