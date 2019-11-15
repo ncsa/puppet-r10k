@@ -46,6 +46,12 @@ check_Errors() {
 }
 
 
+rk_323_workaround() {
+    # https://tickets.puppetlabs.com/browse/RK-323
+    rm -rf /etc/puppetlabs/code/* /var/cache/r10k
+}
+
+
 clean_Old_Logs() {
     find "$LOGDIR" -mtime +30 -delete
 }
@@ -61,6 +67,8 @@ fi
 mkdir -p "$LOGDIR"
 
 get_Lock
+
+rk_323_workaround
 
 $R10K deploy environment -p -v debug2 &>"$LOGFILE"
 
