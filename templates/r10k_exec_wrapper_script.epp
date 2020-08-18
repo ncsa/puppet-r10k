@@ -41,6 +41,7 @@ check_Errors() {
       -e 'error[a-zA-Z0-9_]' \
       -e 'pe_license' \
       -e 'title patterns that use procs are not supported' \
+      -e 'cannot load such file -- puppet/resource_api' \
     >"$tmpfn"
     if [[ -s "$tmpfn" ]] ; then
         cat "$tmpfn"
